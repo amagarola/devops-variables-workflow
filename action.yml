@@ -22,6 +22,18 @@ inputs:
     description: Fail when a requested project/topic file is missing.
     required: false
     default: "false"
+  deployment-project:
+    description: Project name used to resolve config/<project>/deployment.yaml. Empty skips runtime env generation.
+    required: false
+    default: ""
+  deployment-name:
+    description: Deployment entry inside deployment.yaml.
+    required: false
+    default: app
+  runtime-env-file:
+    description: Runtime .env file to write when deployment-project is set.
+    required: false
+    default: generated/runtime.env
 
 outputs:
   tfvars-file:
@@ -36,6 +48,12 @@ outputs:
   config-json:
     description: Compact JSON with the resolved config.
     value: ${{ steps.resolve.outputs.config-json }}
+  runtime-env-file:
+    description: Path to the generated runtime .env file.
+    value: ${{ steps.deployment.outputs.runtime-env-file }}
+  runtime-env-b64:
+    description: Base64 encoded runtime .env content.
+    value: ${{ steps.deployment.outputs.runtime-env-b64 }}
 
 runs:
   using: composite
@@ -63,3 +81,15 @@ runs:
         INPUT_FAIL_ON_MISSING: ${{ inputs.fail-on-missing }}
       run: |
         python "${GITHUB_ACTION_PATH}/scripts/resolve_config.py"
+
+    - name: Resolve deployment runtime env
+      id: deployment
+      if: ${{ inputs.deployment-project != '' }}
+      shell: bash
+      env:
+        INPUT_CONFIG_ROOT: ${{ inputs.config-root }}
+        INPUT_DEPLOYMENT_PROJECT: ${{ inputs.deployment-project }}
+        INPUT_DEPLOYMENT_NAME: ${{ inputs.deployment-name }}
+        INPUT_RUNTIME_ENV_FILE: ${{ inputs.runtime-env-file }}
+      run: |
+        python "${GITHUB_ACTION_PATH}/scripts/resolve_deployment.py"

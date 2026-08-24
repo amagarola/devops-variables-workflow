@@ -1,0 +1,17 @@
+data_dir: /data
+db_path: false
+ssm:
+  - config
+  - private:mask
+optional_secrets:
+  - ADMIN_SESSION_SECRET
+secrets:
+  - SMTP_USER
+  - SMTP_PASS
+  - STRIPE_SECRET_KEY
+  - STRIPE_WEBHOOK_SECRET
+env_defaults:
+  SMTP_TLS: "1"
+  SMTP_SSL: "0"
+optional_workflow_env:
+  - MAIL_TO

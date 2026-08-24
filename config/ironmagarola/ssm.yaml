@@ -1,6 +1,10 @@
 ssm:
+  strava_client_id:
+    env: STRAVA_CLIENT_ID
+    name: /ironmagarola/production/config/strava/client-id
   strava_redirect_uri:
     enabled: true
+    env: STRAVA_REDIRECT_URI
     name: /ironmagarola/production/config/strava/redirect-uri
     description: Canonical Strava OAuth callback for IronMagarola
     type: String

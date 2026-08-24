@@ -49,7 +49,7 @@ def bool_input(value: str) -> bool:
 
 
 def discover_projects(config_root: Path) -> list[str]:
-    return sorted(path.name for path in config_root.iterdir() if path.is_dir())
+    return sorted(path.name for path in config_root.iterdir() if path.is_dir() and path.name != "default")
 
 
 def discover_topics(config_root: Path, projects: list[str]) -> list[str]:
@@ -60,6 +60,8 @@ def discover_topics(config_root: Path, projects: list[str]) -> list[str]:
             continue
         topics.update(path.stem for path in project_dir.glob("*.yaml"))
         topics.update(path.stem for path in project_dir.glob("*.yml"))
+        if (project_dir / "env-properties.yaml").exists() or (project_dir / "env.properties").exists():
+            topics.add("deployment")
     return sorted(topics)
 
 
@@ -133,13 +135,19 @@ def main() -> int:
     for project in projects:
         for topic in topics:
             candidates = [config_root / project / f"{topic}.yaml", config_root / project / f"{topic}.yml"]
+            if topic == "deployment":
+                candidates.append(config_root / project / "env-properties.yaml")
+                candidates.append(config_root / project / "env.properties")
             file_path = next((candidate for candidate in candidates if candidate.exists()), None)
             if file_path is None:
                 if fail_on_missing:
                     raise FileNotFoundError(f"Missing config for {project}/{topic}.yaml")
                 continue
 
-            document = load_yaml(file_path)
+            if file_path.name in {"env.properties", "env-properties.yaml"}:
+                document = {"deployment": {"app": {"env_properties": str(file_path.relative_to(config_root))}}}
+            else:
+                document = load_yaml(file_path)
             if topic not in document:
                 raise ValueError(f"{file_path} must contain root key {topic!r}")
 

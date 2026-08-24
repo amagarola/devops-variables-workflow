@@ -1,6 +1,7 @@
 ssm:
   public_base_url:
     enabled: true
+    env: FINMAGAROLA_PUBLIC_BASE_URL
     name: /finmagarola/production/config/public-base-url
     description: Public base URL for FinMagarola production.
     type: String

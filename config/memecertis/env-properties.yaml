@@ -1,0 +1,4 @@
+data_dir: /data
+db_path: false
+secrets:
+  - ADMIN_SESSION_SECRET

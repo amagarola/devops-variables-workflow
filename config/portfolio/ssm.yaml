@@ -1,0 +1,24 @@
+ssm:
+  smtp_host:
+    env: SMTP_HOST
+    name: /portfolio/production/config/smtp/host
+  smtp_port:
+    env: SMTP_PORT
+    name: /portfolio/production/config/smtp/port
+  smtp_from:
+    env: SMTP_FROM
+    name: /portfolio/production/config/smtp/from
+  invoice_from:
+    env: INVOICE_FROM
+    name: /portfolio/production/config/invoice/from
+  invoice_supplier_name:
+    env: INVOICE_SUPPLIER_NAME
+    name: /portfolio/production/config/invoice/supplier-name
+  invoice_supplier_nif:
+    env: INVOICE_SUPPLIER_NIF
+    name: /portfolio/production/private/invoice/supplier-nif
+    mask: true
+  invoice_supplier_address:
+    env: INVOICE_SUPPLIER_ADDRESS
+    name: /portfolio/production/private/invoice/supplier-address
+    mask: true
