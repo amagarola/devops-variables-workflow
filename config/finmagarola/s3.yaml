@@ -1,0 +1,7 @@
+s3:
+  app_data:
+    enabled: true
+    bucket: finmagarola
+    purpose: app-data
+    versioning: Disabled
+    public_access_block: true

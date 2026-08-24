@@ -1,0 +1,7 @@
+ssm:
+  strava_redirect_uri:
+    enabled: true
+    name: /ironmagarola/production/config/strava/redirect-uri
+    description: Canonical Strava OAuth callback for IronMagarola
+    type: String
+    value: ironmagarola_strava_callback

@@ -1,0 +1,18 @@
+route53:
+  records:
+    root_a:
+      enabled: true
+      zone: shared
+      name: domain
+      type: A
+      ttl: 300
+      records:
+        - public_ip
+    www:
+      enabled: true
+      zone: shared
+      name: www_domain
+      type: CNAME
+      ttl: 300
+      records:
+        - domain_name

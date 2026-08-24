@@ -1,0 +1,11 @@
+route53:
+  records:
+    app:
+      enabled: true
+      zone: shared
+      name: app_subdomain
+      subdomain: memecertis
+      type: A
+      ttl: 300
+      records:
+        - public_ip

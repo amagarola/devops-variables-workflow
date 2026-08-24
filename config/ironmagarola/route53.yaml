@@ -1,0 +1,35 @@
+route53:
+  domain:
+    registration:
+      enabled: true
+      domain_name: ironmagarola.com
+      duration_in_years: 1
+      auto_renew: true
+      transfer_lock: true
+      privacy: true
+      prevent_destroy: true
+  records:
+    legacy:
+      enabled: true
+      zone: shared
+      name: legacy_subdomain
+      type: A
+      ttl: 300
+      records:
+        - public_ip
+    apex:
+      enabled: true
+      zone: registered_domain
+      name: ironmagarola_domain
+      type: A
+      ttl: 300
+      records:
+        - public_ip
+    www:
+      enabled: true
+      zone: registered_domain
+      name: www_ironmagarola_domain
+      type: A
+      ttl: 300
+      records:
+        - public_ip
