@@ -34,6 +34,14 @@ inputs:
     description: Runtime .env file to write when deployment-project is set.
     required: false
     default: generated/runtime.env
+  export-env:
+    description: Export resolved deployment defaults to GITHUB_ENV.
+    required: false
+    default: "true"
+  resolve-runtime-env:
+    description: Resolve Secrets Manager and SSM runtime values. Requires AWS credentials.
+    required: false
+    default: "false"
 
 outputs:
   tfvars-file:
@@ -54,6 +62,15 @@ outputs:
   runtime-env-b64:
     description: Base64 encoded runtime .env content.
     value: ${{ steps.deployment.outputs.runtime-env-b64 }}
+  aws-region:
+    description: Resolved AWS region.
+    value: ${{ steps.deployment-defaults.outputs.aws-region }}
+  aws-role-arn:
+    description: Resolved AWS role ARN.
+    value: ${{ steps.deployment-defaults.outputs.aws-role-arn }}
+  ec2-instance-id:
+    description: Resolved EC2 instance id.
+    value: ${{ steps.deployment-defaults.outputs.ec2-instance-id }}
 
 runs:
   using: composite
@@ -82,9 +99,21 @@ runs:
       run: |
         python "${GITHUB_ACTION_PATH}/scripts/resolve_config.py"
 
+    - name: Resolve deployment defaults
+      id: deployment-defaults
+      if: ${{ inputs.deployment-project != '' }}
+      shell: bash
+      env:
+        INPUT_CONFIG_ROOT: ${{ inputs.config-root }}
+        INPUT_DEPLOYMENT_PROJECT: ${{ inputs.deployment-project }}
+        INPUT_DEPLOYMENT_NAME: ${{ inputs.deployment-name }}
+        INPUT_EXPORT_ENV: ${{ inputs.export-env }}
+      run: |
+        python "${GITHUB_ACTION_PATH}/scripts/resolve_deployment_defaults.py"
+
     - name: Resolve deployment runtime env
       id: deployment
-      if: ${{ inputs.deployment-project != '' }}
+      if: ${{ inputs.deployment-project != '' && inputs.resolve-runtime-env == 'true' }}
       shell: bash
       env:
         INPUT_CONFIG_ROOT: ${{ inputs.config-root }}

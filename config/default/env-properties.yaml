@@ -1,0 +1,4 @@
+defaults:
+  aws_region: us-east-1
+  aws_role_arn: arn:aws:iam::471112989011:role/GitHub_Actions_Role
+  ec2_instance_id: i-0057b7fa819ecefa7
