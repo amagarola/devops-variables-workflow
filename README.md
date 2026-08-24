@@ -11,29 +11,22 @@ The repository has two entry points that read the same YAML files:
 
 ```text
 config/
-  default/
-    deployment.yaml
   shared/
     oidc.yaml
     tags.yaml
   portfolio/
     s3.yaml
-    env-properties.yaml
   ironmagarola/
     s3.yaml
-    env-properties.yaml
 scripts/
   resolve_config.py
-  resolve_deployment.py
 main.tf
 outputs.tf
 variables.tf
 action.yml
 ```
 
-Each YAML file is grouped by project and resource topic. `config/default` is a
-baseline for deployment/runtime values only: project files override it when they
-define the same key.
+Each YAML file is grouped by project and resource topic:
 
 ```yaml
 s3:
@@ -85,38 +78,6 @@ The generated file contains:
 }
 ```
 
-The same action can also resolve deployment runtime variables from
-`config/<project>/env-properties.yaml`:
-
-```yaml
-- name: Resolve runtime env
-  uses: amagarola/devops-variables-workflow@main
-  with:
-    deployment-project: ironmagarola
-    runtime-env-file: generated/runtime.env
-```
-
-Deployment properties can pull values from workflow environment variables,
-AWS Secrets Manager, SSM Parameter Store paths, or another config topic:
-
-```yaml
-ssm:
-  - config
-secrets:
-  - ADMIN_SESSION_SECRET
-  - STRAVA_CLIENT_SECRET
-  - OPENAI_API_KEY
-workflow_env:
-  - APP_BUILD_TIME
-  - OPENAI_MODEL
-  - AI_ENABLED
-value:
-  IRONMAGAROLA_MEDIA_S3_BUCKET: "{s3.gallery.bucket}"
-```
-
-The action writes `runtime-env-file` and exposes `runtime-env-b64` for SSM-based
-deployments.
-
 ## Terraform Module
 
 ```hcl
@@ -128,8 +89,7 @@ module "config" {
 }
 ```
 
-The module exposes `config` plus convenience outputs such as `s3`, `ecr`,
-`route53`, `secrets`, `ssm`, `deployment`, `oidc`, and `tags`.
+The module exposes `config` plus convenience outputs such as `s3`, `oidc`, and `tags`.
 
 ## Public Repository Rule
 
