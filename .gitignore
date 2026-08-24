@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+*.local
+*.log
+*.auto.tfvars.json
+generated/
+.terraform/
+**/.terraform/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+dist/
+build/

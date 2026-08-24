@@ -1,0 +1,13 @@
+s3:
+  app_data:
+    enabled: true
+    bucket: ironmagarola
+    purpose: app-data
+    versioning: Disabled
+    public_access_block: true
+  gallery:
+    enabled: true
+    bucket: ironmagarola-gallery
+    purpose: gallery
+    versioning: Disabled
+    public_access_block: true

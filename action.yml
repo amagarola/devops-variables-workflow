@@ -1,0 +1,65 @@
+name: devops-variables-workflow
+description: Resolve YAML resource maps and generate Terraform variable files.
+
+inputs:
+  config-root:
+    description: Directory containing project YAML config.
+    required: false
+    default: config
+  projects:
+    description: Newline or comma separated project names. Empty discovers config subdirectories.
+    required: false
+    default: ""
+  topics:
+    description: Newline or comma separated resource topics. Empty discovers YAML filenames.
+    required: false
+    default: ""
+  output-file:
+    description: Terraform tfvars JSON file to write.
+    required: false
+    default: generated/devops.auto.tfvars.json
+  fail-on-missing:
+    description: Fail when a requested project/topic file is missing.
+    required: false
+    default: "false"
+
+outputs:
+  tfvars-file:
+    description: Path to the generated Terraform tfvars JSON file.
+    value: ${{ steps.resolve.outputs.tfvars-file }}
+  projects:
+    description: Comma separated resolved project names.
+    value: ${{ steps.resolve.outputs.projects }}
+  topics:
+    description: Comma separated resolved resource topics.
+    value: ${{ steps.resolve.outputs.topics }}
+  config-json:
+    description: Compact JSON with the resolved config.
+    value: ${{ steps.resolve.outputs.config-json }}
+
+runs:
+  using: composite
+  steps:
+    - name: Ensure YAML support
+      shell: bash
+      run: |
+        python - <<'PY'
+        import importlib.util
+        import subprocess
+        import sys
+
+        if importlib.util.find_spec("yaml") is None:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "pyyaml"])
+        PY
+
+    - name: Resolve config
+      id: resolve
+      shell: bash
+      env:
+        INPUT_CONFIG_ROOT: ${{ inputs.config-root }}
+        INPUT_PROJECTS: ${{ inputs.projects }}
+        INPUT_TOPICS: ${{ inputs.topics }}
+        INPUT_OUTPUT_FILE: ${{ inputs.output-file }}
+        INPUT_FAIL_ON_MISSING: ${{ inputs.fail-on-missing }}
+      run: |
+        python "${GITHUB_ACTION_PATH}/scripts/resolve_config.py"

@@ -1,0 +1,4 @@
+oidc:
+  github_actions:
+    enabled: true
+    role_name: GitHub_Actions_Role

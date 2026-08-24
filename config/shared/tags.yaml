@@ -1,0 +1,4 @@
+tags:
+  default:
+    ManagedBy: terraform
+    Environment: production
